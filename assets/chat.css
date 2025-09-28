@@ -70,6 +70,25 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
+/* ========= Progress Bar ========= */
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff88, #00cc6a);
+  width: 0%;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
 .chat-close-btn {
   position: absolute;
   top: 50%;
@@ -171,6 +190,63 @@
   box-shadow: 0 6px 20px rgba(61, 90, 128, 0.4);
 }
 
+/* ========= Message Types ========= */
+.message.error-message .bubble {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  box-shadow: 0 4px 16px rgba(220, 53, 69, 0.3);
+}
+
+.message.success-message .bubble {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
+}
+
+.message.warning-message .bubble {
+  background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+  color: #212529;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  box-shadow: 0 4px 16px rgba(255, 193, 7, 0.3);
+}
+
+/* ========= Completion Message ========= */
+.completion-message .bubble {
+  background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+  border: 1px solid rgba(111, 66, 193, 0.3);
+  box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+  text-align: center;
+  padding: 16px;
+}
+
+.whatsapp-completion-btn {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+  margin-bottom: 8px;
+  display: block;
+  width: 100%;
+}
+
+.whatsapp-completion-btn:hover {
+  background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.completion-summary {
+  margin-top: 8px;
+  opacity: 0.8;
+  font-size: 12px;
+}
+
 /* ========= Avatares ========= */
 .avatar { 
   width: 36px; 
@@ -236,6 +312,34 @@
 }
 .input-area button:active { transform: translateY(0); }
 
+
+/* ========= Rate Limit Timer ========= */
+.rate-limit-timer {
+  position: absolute;
+  top: -35px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+  color: #212529;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* ========= Botão launcher - LADO ESQUERDO ========= */
 .chat-launcher {
@@ -393,6 +497,30 @@
   40% { opacity: 1; }
 }
 
+/* ========= Enhanced Loading States ========= */
+.input-area button:disabled {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+.input-area input:disabled {
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+/* ========= Loading Animation ========= */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.loading-state {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
 /* ========= Responsivo ========= */
 @media (max-width: 768px) {
   #chat-root {
@@ -450,6 +578,12 @@
   .input-area button {
     padding: 11px 18px;
     font-size: 14px;
+  }
+
+  .rate-limit-timer {
+    top: -30px;
+    font-size: 11px;
+    padding: 6px 10px;
   }
 
   .chat-launcher {
@@ -522,6 +656,12 @@
   .input-area button {
     padding: 10px 16px;
     font-size: 13px;
+  }
+
+  .rate-limit-timer {
+    top: -28px;
+    font-size: 10px;
+    padding: 5px 8px;
   }
 
   .chat-launcher {
@@ -622,5 +762,9 @@
 
 .chat-close-btn:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+.whatsapp-completion-btn:focus-visible {
+  outline: 2px solid rgba(37, 211, 102, 0.8);
   outline-offset: 2px;
 }
