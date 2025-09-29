@@ -236,28 +236,18 @@
 
   // Sistema de detecção robusta de fluxo completo
   function isFlowCompleted(responseData) {
-    // Múltiplas verificações para robustez
+    // ✅ APENAS o backend decide quando o fluxo está completo
     var flowCompleted = responseData.flow_completed === true;
-    var highConfidence = (responseData.confidence_score || 0) >= 0.8;
-    var completedState = responseData.state === 'completed';
-    var hasExtractedData = responseData.extracted_data && 
-                          Object.keys(responseData.extracted_data).length > 0;
     
     // Log para debugging
     console.log('🔍 Verificação de fluxo completo:', {
       flow_completed: flowCompleted,
-      confidence_score: responseData.confidence_score,
-      high_confidence: highConfidence,
-      state: responseData.state,
-      completed_state: completedState,
-      has_extracted_data: hasExtractedData,
+      backend_decision: 'ONLY_BACKEND_CONTROLS_FLOW',
       correlation_id: responseData.correlation_id
     });
     
-    // Fluxo é considerado completo se:
-    // 1. Backend explicitamente marca como completo OU
-    // 2. Alta confiança + estado completo + dados extraídos
-    return flowCompleted || (highConfidence && completedState && hasExtractedData);
+    // ✅ SOMENTE o backend determina completude
+    return flowCompleted;
   }
 
   // Sistema de extração de dados inteligente
@@ -467,8 +457,13 @@
       }
       
       // Salvar dados da conversa
-      if (data.extracted_data) {
+      // ✅ Priorizar lead_data, fallback para extracted_data
+      if (data.lead_data && typeof data.lead_data === 'object') {
+        chatState.conversationData = { ...chatState.conversationData, ...data.lead_data };
+        console.log('💾 Dados salvos de lead_data:', data.lead_data);
+      } else if (data.extracted_data && typeof data.extracted_data === 'object') {
         chatState.conversationData = { ...chatState.conversationData, ...data.extracted_data };
+        console.log('💾 Dados salvos de extracted_data:', data.extracted_data);
       }
       
       // Resetar contador de retry
