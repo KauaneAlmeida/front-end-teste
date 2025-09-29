@@ -487,10 +487,6 @@
           'warning',
           1000
         );
-      } else {
-        // Don't show retry message, just log it
-        console.log(`🔄 Tentativa ${chatState.retryCount} de ${CONFIG.MAX_RETRY_ATTEMPTS} - sem mensagem`);
-      }
         
         // Retry após 2 segundos
         setTimeout(() => {
@@ -500,6 +496,9 @@
         }, 2000);
         
       } else {
+        // Don't show retry message, just log it
+        console.log(`🔄 Tentativa ${chatState.retryCount} de ${CONFIG.MAX_RETRY_ATTEMPTS} - sem mensagem`);
+        
         // Erro definitivo - mostrar mensagem de fallback
         var errorMessage = "⚠️ Não consegui conectar com o servidor. ";
         
