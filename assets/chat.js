@@ -487,6 +487,10 @@
           'warning',
           1000
         );
+      } else {
+        // Don't show retry message, just log it
+        console.log(`🔄 Tentativa ${chatState.retryCount} de ${CONFIG.MAX_RETRY_ATTEMPTS} - sem mensagem`);
+      }
         
         // Retry após 2 segundos
         setTimeout(() => {
