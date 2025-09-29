@@ -262,26 +262,48 @@
 
   // Sistema de extração de dados inteligente
   function extractUserData(responseData) {
-    // Usar dados estruturados do backend em vez de regex
-    var extractedData = responseData.extracted_data || {};
+    console.log('📊 [EXTRACT_DATA] Extraindo dados do usuário...');
     
-    // Fallback seguro para campos essenciais
+    // ✅ GARANTIR que sempre temos um objeto válido
+    var extractedData = {};
+    var leadData = {};
+    
+    // Priorizar lead_data, fallback para extracted_data
+    if (responseData && typeof responseData === 'object') {
+      if (responseData.lead_data && typeof responseData.lead_data === 'object') {
+        leadData = responseData.lead_data;
+        extractedData = responseData.lead_data;
+      } else if (responseData.extracted_data && typeof responseData.extracted_data === 'object') {
+        extractedData = responseData.extracted_data;
+        leadData = responseData.extracted_data;
+      }
+    }
+    
+    console.log('📋 [EXTRACT_DATA] Lead data:', leadData);
+    console.log('📋 [EXTRACT_DATA] Extracted data:', extractedData);
+    
+    // ✅ MAPEAMENTO ROBUSTO com múltiplas fontes
     var userData = {
-      name: extractedData.name || extractedData.nome || '',
-      phone: extractedData.phone || extractedData.telefone || extractedData.whatsapp || '',
-      email: extractedData.email || '',
-      legal_area: extractedData.legal_area || extractedData.area_juridica || '',
-      description: extractedData.description || extractedData.descricao || ''
+      name: leadData.identification || leadData.name || leadData.nome || extractedData.name || extractedData.nome || '',
+      phone: leadData.contact_info || leadData.phone || leadData.telefone || leadData.whatsapp || 
+             extractedData.phone || extractedData.telefone || extractedData.whatsapp || '',
+      email: leadData.email || extractedData.email || '',
+      legal_area: leadData.area_qualification || leadData.legal_area || leadData.area_juridica || leadData.area ||
+                  extractedData.legal_area || extractedData.area_juridica || extractedData.area || '',
+      description: leadData.case_details || leadData.description || leadData.descricao || leadData.details || leadData.problema ||
+                   extractedData.description || extractedData.descricao || extractedData.details || extractedData.problema || ''
     };
     
-    // Limpar dados vazios
+    // ✅ LIMPEZA SEGURA de dados vazios
     Object.keys(userData).forEach(key => {
-      if (!userData[key] || userData[key].trim() === '') {
+      if (!userData[key] || (typeof userData[key] === 'string' && userData[key].trim() === '')) {
         delete userData[key];
       }
     });
     
-    console.log('📊 Dados extraídos:', userData);
+    console.log('✅ [EXTRACT_DATA] Dados finais extraídos:', userData);
+    console.log('📊 [EXTRACT_DATA] Total de campos:', Object.keys(userData).length);
+    
     return userData;
   }
 
