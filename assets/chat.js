@@ -625,20 +625,25 @@
     var baseMessage = "Olá! Vim do site m.lima e preciso de ajuda jurídica urgente.";
     baseMessage += "\n\nGostaria de falar com um advogado especializado para esclarecer algumas dúvidas importantes sobre minha situação.";
     
-    // Incluir dados coletados no chat
-    if (userData && Object.keys(userData).length > 0) {
+    // ✅ INCLUIR dados coletados de forma segura
+    if (userData && typeof userData === 'object' && Object.keys(userData).length > 0) {
       baseMessage += "\n\n📋 Informações já coletadas:";
       Object.entries(userData).forEach(([key, value]) => {
+        if (!value || (typeof value === 'string' && value.trim() === '')) return;
+        
         var label = key === 'name' ? 'Nome' : 
                    key === 'phone' ? 'Telefone' : 
                    key === 'email' ? 'Email' : 
-                   key === 'legal_area' ? 'Área Jurídica' : key;
-        baseMessage += `\n• ${label}: ${value}`;
+                   key === 'legal_area' ? 'Área Jurídica' : 
+                   key === 'description' ? 'Descrição' : key;
+        baseMessage += `\n• ${label}: ${String(value).substring(0, 100)}`;
       });
+    } else {
+      baseMessage += "\n\n📋 Dados do chat serão compartilhados durante a conversa.";
     }
     
     // Adicionar contexto específico se disponível
-    if (userData.origem && userData.origem !== 'Botão Flutuante') {
+    if (userData && userData.origem && userData.origem !== 'Botão Flutuante') {
       baseMessage += "\n\n📍 Contexto: " + userData.origem;
     }
     
