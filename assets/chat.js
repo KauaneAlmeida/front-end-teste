@@ -516,7 +516,7 @@
         // Reset retry counter
         chatState.retryCount = 0;
       }
-    } finally {
+      
       // Sempre restaurar estado do botão
       chatState.isLoading = false;
       if (sendBtn) {
